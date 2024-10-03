@@ -1,6 +1,6 @@
 # api-book
 
-to initialize:
+after clone, to initialize:
 
 ```
 npm run dev

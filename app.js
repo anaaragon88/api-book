@@ -1,5 +1,6 @@
 import connectionDB from "./database/connectionDB.js";
 import bookModel from "./models/bookModel.js";
+import userModel from "./models/userModel.js";
 import express from "express";
 import bookrouter from "./routes/routes.js";
 import "dotenv/config";
@@ -19,12 +20,14 @@ console.log(
 try {
   await connectionDB.authenticate();
   console.log("Conexión exitosa ✨");
-  await bookModel.sync({ force: false });
-  console.log("La tabla fue creada ✨");
+  await userModel.sync({ force: true });
+  console.log("La tabla user fue creada ✨");
+  await bookModel.sync({ force: true });
+  console.log("La tabla book fue creada ✨");
 } catch (error) {
   console.error("Fallo fatal y muerte 💀", error);
 }
 
-export const server = app.listen(4000, () => {
-  console.log("Servidor en puerto 4000 🚀 http://localhost:4000");
+export const server = app.listen(8000, () => {
+  console.log("Servidor en puerto 8000 🚀 http://localhost:8000");
 });

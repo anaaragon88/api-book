@@ -1,36 +1,33 @@
 import connectionDB from "../database/connectionDB.js";
 import { DataTypes } from "sequelize";
-import userModel from "./userModel.js";
 
-const bookModel = connectionDB.define(
-  "Book",
+const userModel = connectionDB.define(
+  "User",
   {
     id: {
       type: DataTypes.BIGINT,
       primaryKey: true,
       autoIncrement: true,
     },
-    title: {
+    name: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    author: {
+    email: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    description: {
+    password: {
       type: DataTypes.STRING,
       allowNull: false,
     },
   },
   {
-    tableName: "books",
+    tableName: "users",
     timestamps: false,
   }
 );
 
-//console.log(bookModel === connectionDB.models.book); // true
-userModel.hasMany(bookModel, { foreignKey: "user_id" });
-bookModel.belongsTo(userModel, { foreignKey: "user_id" });
+console.log(userModel === connectionDB.models.user); // true
 
-export default bookModel;
+export default userModel;
