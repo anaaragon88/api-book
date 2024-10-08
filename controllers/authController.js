@@ -1,26 +1,72 @@
 import userModel from "../models/userModel.js";
 import dotenv from "dotenv";
-import { encrypt } from "../utils/handlePassword.js";
+import { encrypt, compare } from "../utils/handlePassword.js";
+import { handleHttpError } from "../utils/handleError.js";
+import { tokenSign } from "../utils/handleJwt.js";
 dotenv.config();
 
-export const register = async (req, res) => {
+export const registerController = async (req, res) => {
   try {
     const { name, email, password } = req.body;
 
+    // Verificar si el email o nombre ya existen en la base de datos
+    const existingUserByEmail = await userModel.findOne({ where: { email } });
+    if (existingUserByEmail) {
+      return res.status(409).json({ message: "El email ya está registrado" });
+    }
+
+    const existingUserByName = await userModel.findOne({ where: { name } });
+    if (existingUserByName) {
+      return res.status(409).json({ message: "El nombre ya está en uso" });
+    }
+
+    // Encriptar la contraseña
     const hashedPassword = await encrypt(password);
 
-    //const newUser = await userModel.create({
-
+    // Crear nuevo usuario
     const newUser = {
       name,
       email,
       password: hashedPassword,
     };
     await userModel.create(newUser);
+
     res.status(201).json({ message: `${newUser.name} creado exitosamente` });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Error al registrar el usuario" });
+  }
+};
+
+export const loginController = async (req, res) => {
+  try {
+    const userEmail = req.body.email;
+    const loginPassword = req.body.password;
+
+    const user = await userModel.findOne({ where: { email: userEmail } });
+    if (!user) {
+      handleHttpError(res, "USER_NOT_EXISTS", 404);
+      return;
+    }
+
+    const hashPassword = user.password;
+    console.log(hashPassword);
+    const check = await compare(loginPassword, hashPassword);
+
+    if (!check) {
+      handleHttpError(res, "PASSWORD_INVALID", 401);
+      return;
+    }
+
+    const sesiondata = {
+      token: await tokenSign(user),
+      user: user,
+    };
+
+    res.send({ sesiondata });
+  } catch (error) {
+    console.log(error);
+    handleHttpError(res, "ERROR_LOGIN_USER");
   }
 };
 
