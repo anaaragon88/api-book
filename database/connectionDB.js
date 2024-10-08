@@ -1,19 +1,21 @@
-import dotenv from "dotenv";
 import { Sequelize } from "sequelize";
-dotenv.config();
+import {
+  DB_DEV_NAME,
+  DB_TEST_NAME,
+  DB_USER,
+  DB_PASSWORD,
+  DB_HOST,
+  NODE_ENV,
+} from "../config.js";
 
-const connectionDB = new Sequelize(
-  process.env.DB_NAME,
-  process.env.DB_USER,
-  process.env.DB_PASSWORD,
-  {
-    host: process.env.HOST,
-    port: process.env.PORT,
-    dialect: "mysql",
-    define: {
-      timestamps: false,
-    },
-  }
-);
+const DB_NAME = NODE_ENV === "test" ? DB_TEST_NAME : DB_DEV_NAME;
+
+const connectionDB = new Sequelize(DB_NAME, DB_USER, DB_PASSWORD, {
+  host: DB_HOST,
+  dialect: "mysql",
+  define: {
+    timestamps: false,
+  },
+});
 
 export default connectionDB;

@@ -9,7 +9,7 @@ export const registerController = async (req, res) => {
   try {
     const { name, email, password } = req.body;
 
-    // Verificar si el email o nombre ya existen en la base de datos
+    // Verificar si el email y nombre ya existen en la base de datos
     const existingUserByEmail = await userModel.findOne({ where: { email } });
     if (existingUserByEmail) {
       return res.status(409).json({ message: "El email ya está registrado" });

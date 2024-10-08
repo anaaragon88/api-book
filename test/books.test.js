@@ -1,6 +1,7 @@
 import request from "supertest";
 import { app, server } from "../app";
 import connectionDB from "../database/connectionDB.js";
+import bookModel from "../models/bookModel.js";
 
 describe("crudBooks", () => {
   test("should return a response with status 200 and type json", async () => {
@@ -8,8 +9,29 @@ describe("crudBooks", () => {
     expect(response.statusCode).toBe(200);
     expect(response.headers["content-type"]).toContain("application/json");
   });
-  afterAll(() => {
-    connectionDB.close();
+
+  test("should return a response with status 201 and type json", async () => {
+    const response = await request(app).post("/create").send({
+      title: "test",
+      author: "test",
+      description: "test test test",
+    });
+    expect(response.statusCode).toBe(201);
+    expect(response.headers["content-type"]).toContain("application/json");
+  });
+  /*afterEach(async () => {
+    // Elimina el libro con title "test" después de cada test
+    await bookModel.destroy({ where: { title: "test" } });
+  });*/
+
+  test("should delete a book", async () => {
+    const response = await request(app).delete(`/${bookModel.id}`);
+    expect(response.statusCode).toBe(200);
+    expect(response.headers["content-type"]).toContain("application/json");
+  });
+
+  afterAll(async () => {
+    await connectionDB.close();
     server.close();
   });
 });
