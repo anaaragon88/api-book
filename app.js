@@ -13,7 +13,7 @@ app.get("/hola", (req, res) => {
 });
 app.use(express.json());
 app.use(cors());
-app.use("/", bookrouter);
+app.use("/books", bookrouter);
 app.use("/auth", authRouter);
 
 try {

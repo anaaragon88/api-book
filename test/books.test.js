@@ -5,13 +5,13 @@ import bookModel from "../models/bookModel.js";
 
 describe("crudBooks", () => {
   test("should return a response with status 200 and type json", async () => {
-    const response = await request(app).get("/book");
+    const response = await request(app).get("/books");
     expect(response.statusCode).toBe(200);
     expect(response.headers["content-type"]).toContain("application/json");
   });
 
   test("should return a response with status 201 and type json", async () => {
-    const response = await request(app).post("/create").send({
+    const response = await request(app).post("/books").send({
       title: "test",
       author: "test",
       description: "test test test",
@@ -19,13 +19,19 @@ describe("crudBooks", () => {
     expect(response.statusCode).toBe(201);
     expect(response.headers["content-type"]).toContain("application/json");
   });
-  /*afterEach(async () => {
+  afterEach(async () => {
     // Elimina el libro con title "test" después de cada test
     await bookModel.destroy({ where: { title: "test" } });
-  });*/
+  });
 
   test("should delete a book", async () => {
-    const response = await request(app).delete(`/${bookModel.id}`);
+    const book_to_delete = await bookModel.create({
+      title: "test",
+      author: "test",
+      description: "test test test",
+    });
+
+    const response = await request(app).delete(`/books/${book_to_delete.id}`);
     expect(response.statusCode).toBe(200);
     expect(response.headers["content-type"]).toContain("application/json");
   });
