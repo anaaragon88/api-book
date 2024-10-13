@@ -1,6 +1,4 @@
 import connectionDB from "./database/connectionDB.js";
-import bookModel from "./models/bookModel.js";
-import userModel from "./models/userModel.js";
 import express from "express";
 import bookrouter from "./routes/routes.js";
 import authRouter from "./routes/authRoutes.js";

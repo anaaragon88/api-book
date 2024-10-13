@@ -1,5 +1,4 @@
 import { body, check } from "express-validator";
-import bookModel from "../models/bookModel.js";
 import { validateResult } from "./helperValidator.js";
 
 export const validateCreateBook = [

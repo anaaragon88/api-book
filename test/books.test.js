@@ -36,6 +36,29 @@ describe("crudBooks", () => {
     expect(response.headers["content-type"]).toContain("application/json");
   });
 
+  test("should update a book", async () => {
+    const book_to_update = await bookModel.create({
+      title: "test",
+      author: "test",
+      description: "test test test",
+    });
+
+    const response = await request(app)
+      .put(`/books/${book_to_update.id}`)
+      .send({
+        title: "test updated",
+        author: "updated author",
+        description: "updated description",
+      });
+    expect(response.statusCode).toBe(200);
+    expect(response.headers["content-type"]).toContain("application/json");
+    expect(response.body.message).toBe("Libro actualizado exitosamente");
+  });
+  afterEach(async () => {
+    // Elimina el libro con title "test" después de cada test
+    await bookModel.destroy({ where: { title: "test updated" } });
+  });
+
   afterAll(async () => {
     await connectionDB.close();
     server.close();
